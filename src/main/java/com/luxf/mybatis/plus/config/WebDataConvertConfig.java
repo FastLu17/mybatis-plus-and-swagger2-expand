@@ -1,4 +1,4 @@
-package com.lxf.mybatis.plus.config;
+package com.luxf.mybatis.plus.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;

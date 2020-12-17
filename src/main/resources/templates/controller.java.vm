@@ -1,12 +1,9 @@
-package templates;
-
-{package.Controller};
+package ${package.Controller};
 
 import cn.hutool.core.lang.Snowflake;
-import cn.luxf.api.Result;
+import ${resultName};
 import ${package.Entity}.${entity};
-## import cn.luxf.demo.model.page.${entity}ReqPageVO;
-import cn.luxf.demo.model.vo.$!{custom}.req.${entity}ReqVO;
+import $!{reqPackName}.${entity}${reqSuffix};
 import $!{package.Service}.$!{table.serviceName};
 ## import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 ## import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -65,12 +62,13 @@ public class ${table.controllerName} {
      */
     @PostMapping
     @ApiOperation(value = "新增 $!{table.comment}")
-    public Result<$!{table.entityName}> create(@Valid @RequestBody ${entity}ReqVO req) {
+    public ${resultSimpleName}<$!{table.entityName}> create(@Valid @RequestBody ${entity}Req req) {
         ${entity} entity = new ${entity}();
         BeanUtils.copyProperties(req, entity);
-        entity.setId(idWorker.nextIdStr());
+        ${idClassName} id =#if(${isString}) idWorker.nextIdStr(); #else idWorker.nextId(); #end
+        entity.setId(id);
         boolean saved = $!{table.entityPath}Service.save(entity);
-        return saved ? Result.success(entity) : Result.failure();
+        return saved ? ${resultSimpleName}.${success}(entity) : ${resultSimpleName}.${failure}();
     }
 
     /**
@@ -84,9 +82,9 @@ public class ${table.controllerName} {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", required = true, paramType = "path"),
     })
-    public Result<String> deleteById(@PathVariable String id) {
+    public ${resultSimpleName}<?> deleteById(@PathVariable ${idClassName} id) {
         boolean removed = $!{table.entityPath}Service.removeById(id);
-        return removed ? Result.success() : Result.failure();
+        return removed ? ${resultSimpleName}.${success}() : ${resultSimpleName}.${failure}();
     }
 
     /**
@@ -100,12 +98,12 @@ public class ${table.controllerName} {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", required = true, paramType = "path"),
     })
-    public Result<String> updateById(@PathVariable String id, @Valid @RequestBody ${entity}ReqVO req) {
+    public ${resultSimpleName}<?> updateById(@PathVariable ${idClassName} id, @Valid @RequestBody ${entity}Req req) {
         ${entity} entity = new ${entity}();
         BeanUtils.copyProperties(req, entity);
         entity.setId(id);
         boolean updated = $!{table.entityPath}Service.updateById(entity);
-        return updated ? Result.success() : Result.failure();
+        return updated ? ${resultSimpleName}.${success}() : ${resultSimpleName}.${failure}();
     }
 
     /**
@@ -115,12 +113,12 @@ public class ${table.controllerName} {
      * @return Result
      */
     @GetMapping("/{id}")
-    @ApiOperation(value = "根据ID查询 $!{table.comment}信息")
+    @ApiOperation(value = "根据ID查询 $!{table.comment}")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", required = true, paramType = "path"),
     })
-    public Result<$!{table.entityName}> getById(@PathVariable String id) {
-        return Result.success($!{table.entityPath}Service.getById(id));
+    public ${resultSimpleName}<$!{table.entityName}> getById(@PathVariable ${idClassName} id) {
+        return ${resultSimpleName}.${success}($!{table.entityPath}Service.getById(id));
     }
 }
 

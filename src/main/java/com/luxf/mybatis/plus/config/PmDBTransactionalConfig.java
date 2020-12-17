@@ -1,4 +1,4 @@
-package com.lxf.mybatis.plus.config;
+package com.luxf.mybatis.plus.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.TargetSource;

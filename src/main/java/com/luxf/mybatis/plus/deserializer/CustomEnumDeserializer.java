@@ -1,4 +1,4 @@
-package com.lxf.mybatis.plus.deserializer;
+package com.luxf.mybatis.plus.deserializer;
 
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
@@ -6,7 +6,7 @@ import com.alibaba.fastjson.parser.DefaultJSONParser;
 import com.alibaba.fastjson.parser.JSONToken;
 import com.alibaba.fastjson.parser.deserializer.EnumDeserializer;
 import com.alibaba.fastjson.parser.deserializer.ObjectDeserializer;
-import com.lxf.mybatis.plus.base.DescriptionEnum;
+import com.luxf.mybatis.plus.base.DescriptionEnum;
 
 import java.lang.reflect.Type;
 import java.util.stream.Collectors;

@@ -1,5 +1,6 @@
-package com.lxf.mybatis.plus.base;
+package com.luxf.mybatis.plus.base;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -10,6 +11,8 @@ import java.time.LocalDateTime;
  **/
 @Data
 public abstract class BaseEntity {
+
+    @TableId("ID")
     private Long id;
 
     private String createdBy;

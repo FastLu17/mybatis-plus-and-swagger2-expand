@@ -1,6 +1,6 @@
-package com.lxf.mybatis.plus.base;
+package com.luxf.mybatis.plus.base;
 
-import com.baomidou.mybatisplus.core.enums.IEnum;
+import com.baomidou.mybatisplus.annotation.IEnum;
 
 import java.io.Serializable;
 

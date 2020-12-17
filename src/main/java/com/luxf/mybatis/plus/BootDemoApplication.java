@@ -1,4 +1,4 @@
-package com.lxf.mybatis.plus;
+package com.luxf.mybatis.plus;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

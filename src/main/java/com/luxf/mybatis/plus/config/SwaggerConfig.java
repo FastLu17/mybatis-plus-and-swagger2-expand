@@ -1,4 +1,4 @@
-package com.lxf.mybatis.plus.config;
+package com.luxf.mybatis.plus.config;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

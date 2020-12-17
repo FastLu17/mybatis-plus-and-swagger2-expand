@@ -1,6 +1,6 @@
-package com.lxf.mybatis.plus.config;
+package com.luxf.mybatis.plus.config;
 
-import com.lxf.mybatis.plus.base.DescriptionEnum;
+import com.luxf.mybatis.plus.base.DescriptionEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

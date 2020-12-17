@@ -1,7 +1,7 @@
-package com.lxf.mybatis.plus.config;
+package com.luxf.mybatis.plus.config;
 
 import cn.hutool.core.util.ClassUtil;
-import com.lxf.mybatis.plus.base.DescriptionEnum;
+import com.luxf.mybatis.plus.base.DescriptionEnum;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
@@ -65,6 +65,7 @@ public class SwaggerObjectMapperConfiguredEvent implements ApplicationListener<O
                  * toString()的具体返回值, 需要配合{@link CustomEnumConverterFactory}自定义的枚举Converter、
                  *
                  * TODO: 注册类似{@link org.springframework.core.convert.support.EnumToStringConverter}的转换器, Enum对象无需重写toString()方法、
+                 * EnumToStringConverter无法生效、不可用. 还是重写toString()、
                  */
                 if (declaringClass.equals(Enum.class)) {
                     throw new UnsupportedOperationException(

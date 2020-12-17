@@ -1,18 +1,13 @@
-package com.lxf.mybatis.plus.config;
+package com.luxf.mybatis.plus.config;
 
-import com.lxf.mybatis.plus.base.DescriptionEnum;
+import com.luxf.mybatis.plus.base.DescriptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -42,7 +37,7 @@ import java.util.stream.Stream;
 public class CustomEnumConverterFactory implements ConverterFactory<String, DescriptionEnum<?>> {
 
     /**
-     * {@link DescriptionEnum}继承了{@link com.baomidou.mybatisplus.core.enums.IEnum}, 可以直接将枚举值转换插入数据库中、
+     * {@link DescriptionEnum}继承了{@link com.baomidou.mybatisplus.annotation.IEnum}, 可以直接将枚举值转换插入数据库中、
      */
     private static final Map<Class<? extends DescriptionEnum<?>>, DescriptionEnum<?>[]> ENUM_CACHE = new ConcurrentHashMap<>(64);
 
@@ -52,19 +47,12 @@ public class CustomEnumConverterFactory implements ConverterFactory<String, Desc
         if (Objects.nonNull(enums)) {
             return enums;
         }
-        Method values = ClassUtils.getMethod(enumType, "values");
-        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-            values.setAccessible(true);
-            return null;
-        });
-        DescriptionEnum<?>[] invokeResult = new DescriptionEnum<?>[0];
-        try {
-            invokeResult = (DescriptionEnum<?>[]) values.invoke(null);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            log.error("The target type {} invoke method 'values()' error.", enumType);
+        if (enumType.isEnum()) {
+            DescriptionEnum<?>[] enumConstants = enumType.getEnumConstants();
+            ENUM_CACHE.put(enumType, enumConstants);
+            return enumConstants;
         }
-        ENUM_CACHE.put(enumType, invokeResult);
-        return invokeResult;
+        return new DescriptionEnum[]{};
     }
 
     @Override
@@ -85,34 +73,16 @@ public class CustomEnumConverterFactory implements ConverterFactory<String, Desc
             if (source.length() == 0) {
                 return null;
             }
-
-            DescriptionEnum<?>[] descriptionEnums = ENUM_CACHE.get(enumType);
-            if (Objects.nonNull(descriptionEnums)) {
-                for (DescriptionEnum<?> desc : descriptionEnums) {
-                    if (source.trim().equals(desc.getValue())) {
-                        return (T) desc;
+            // enumType.isEnum() always true.
+            T[] enumConstants = enumType.getEnumConstants();
+            if (enumConstants != null) {
+                ENUM_CACHE.put(enumType, enumConstants);
+                for (T constant : enumConstants) {
+                    if (source.trim().equals(constant.getValue())) {
+                        return constant;
                     }
                 }
-                throwException(source, descriptionEnums);
-            }
-            try {
-                Method values = ClassUtils.getMethod(enumType, "values");
-                AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-                    values.setAccessible(true);
-                    return null;
-                });
-                T[] temporaryConstants = (T[]) values.invoke(null);
-                if (temporaryConstants != null) {
-                    ENUM_CACHE.put(enumType, temporaryConstants);
-                    for (T constant : temporaryConstants) {
-                        if (source.trim().equals(constant.getValue())) {
-                            return constant;
-                        }
-                    }
-                    throwException(source, temporaryConstants);
-                }
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                log.error("The target type {} invoke method 'values()' error.", enumType);
+                throwException(source, enumConstants);
             }
             return null;
         }
