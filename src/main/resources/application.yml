@@ -16,3 +16,6 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # @Deprecated com.baomidou.mybatisplus.extension.handlers.MybatisEnumTypeHandler
+    # 必须指定默认的枚举转换器、否则枚举转换不生效、
+    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
