@@ -10,6 +10,11 @@
         <result column="NICK_NAME" property="nickName" />
         <result column="AGE" property="age" />
         <result column="ADDRESS" property="address" />
+        <result column="SEX" property="sex" />
+        <result column="created_By" property="createdBy" />
+        <result column="create_Time" property="createTime" />
+        <result column="update_By" property="updateBy" />
+        <result column="update_Time" property="updateTime" />
     </resultMap>
 
 </mapper>

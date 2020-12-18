@@ -25,13 +25,13 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo())
                 .select()
                 // 扫描包
-                .apis(RequestHandlerSelectors.basePackage("com.lxf.mybatis.plus.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.luxf.mybatis.plus.controller"))
                 // 扫描在API注解的controller
                 .apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
                 // 扫描带ApiOperation注解的方法
                 .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
                 .paths(PathSelectors.any())
-                .build().host(HOST);
+                .build();
     }
 
     private ApiInfo apiInfo() {

@@ -3,6 +3,7 @@ package com.luxf.mybatis.plus.controller;
 import cn.hutool.core.lang.Snowflake;
 import com.luxf.mybatis.plus.base.Result;
 import com.luxf.mybatis.plus.entity.User;
+import com.luxf.mybatis.plus.enums.SexEnum;
 import com.luxf.mybatis.plus.req.user.UserReq;
 import com.luxf.mybatis.plus.service.UserService;
 import io.swagger.annotations.Api;
@@ -10,6 +11,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
+import org.springframework.lang.NonNull;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +24,7 @@ import javax.validation.Valid;
  * </p>
  *
  * @author luxf
- * @since 2020-12-17
+ * @since 2020-12-18
  */
 @RestController
 @RequestMapping("/user")
@@ -101,6 +103,22 @@ public class UserController {
     })
     public Result<User> getById(@PathVariable Long id) {
         return Result.success(userService.getById(id));
+    }
+
+    /**
+     * TODO: 响应的值,不是SexEnum#value、而是Enum#name().  需要ResponseBody 处理一下、或者自定义EnumToStringConverter? 或者Spring boot的版本过低对应ObjectMapper的问题?
+     *
+     * @param sex
+     * @return
+     */
+    @GetMapping("/enum")
+    @ApiOperation(value = "测试Enum")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sex", required = true, paramType = "query"),
+    })
+    public Result<SexEnum> testEnum(@NonNull @RequestParam SexEnum sex) {
+        System.out.println("sex = " + sex);
+        return Result.success(sex);
     }
 }
 

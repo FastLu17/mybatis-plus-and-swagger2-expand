@@ -23,7 +23,7 @@ import javax.sql.DataSource;
 import java.util.Collections;
 
 /**
- * 事务配置,默认 : 开启
+ * 事务配置
  *
  * @author luxf
  * @date 2020-12-07 17:35
