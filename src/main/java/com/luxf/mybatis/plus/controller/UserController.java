@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * <p>
@@ -106,19 +107,32 @@ public class UserController {
     }
 
     /**
-     * TODO: 响应的值,不是SexEnum#value、而是Enum#name().  需要ResponseBody 处理一下、或者自定义EnumToStringConverter? 或者Spring boot的版本过低对应ObjectMapper的问题?
+     * TODO: 响应的值,不是SexEnum#value、而是Enum#name().  需要ResponseBody 处理一下、或者自定义EnumToStringConverter? 或者处理ObjectMapper?
+     * <p>
+     * 已处理、
      *
      * @param sex
      * @return
+     * @see com.luxf.mybatis.plus.config.WebDataConvertConfig#configureMessageConverters(List)
      */
     @GetMapping("/enum")
     @ApiOperation(value = "测试Enum")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "sex", required = true, paramType = "query"),
+            @ApiImplicitParam(name = "sex", value = "性别", required = true, paramType = "query"),
     })
     public Result<SexEnum> testEnum(@NonNull @RequestParam SexEnum sex) {
         System.out.println("sex = " + sex);
         return Result.success(sex);
+    }
+
+    /**
+     *  TODO: POST请求时, 数字转换Enum不正常、
+     */
+    @PostMapping("/enum/post")
+    @ApiOperation(value = "测试Enum")
+    public Result<UserReq> testEnumPost(@Valid @RequestBody UserReq req) {
+        System.out.println("sex = " + req);
+        return Result.success(req);
     }
 }
 

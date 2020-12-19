@@ -63,9 +63,6 @@ public class SwaggerObjectMapperConfiguredEvent implements ApplicationListener<O
                 /**
                  * 枚举类必须重写toString()方法, 否则swagger无法正确展示可用、{@link com.aos.driverlife.miniapp.enums.QuestionTypeEnum}
                  * toString()的具体返回值, 需要配合{@link CustomEnumConverterFactory}自定义的枚举Converter、
-                 *
-                 * TODO: 注册类似{@link org.springframework.core.convert.support.EnumToStringConverter}的转换器, Enum对象无需重写toString()方法、
-                 * EnumToStringConverter无法生效、不可用. 还是重写toString()、
                  */
                 if (declaringClass.equals(Enum.class)) {
                     throw new UnsupportedOperationException(
