@@ -2,6 +2,7 @@ package com.luxf.mybatis.plus.config;
 
 import cn.hutool.core.util.ClassUtil;
 import com.luxf.mybatis.plus.base.DescriptionEnum;
+import com.luxf.mybatis.plus.base.EnumCache;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
@@ -61,8 +62,8 @@ public class SwaggerObjectMapperConfiguredEvent implements ApplicationListener<O
                 Method toString = ClassUtil.getDeclaredMethod(subType, "toString");
                 Class<?> declaringClass = toString.getDeclaringClass();
                 /**
-                 * 枚举类必须重写toString()方法, 否则swagger无法正确展示可用、{@link com.aos.driverlife.miniapp.enums.QuestionTypeEnum}
-                 * toString()的具体返回值, 需要配合{@link CustomEnumConverterFactory}自定义的枚举Converter、
+                 * 枚举类必须重写toString()方法, 否则swagger无法正确展示可用、{@link com.luxf.mybatis.plus.enums.SexEnum}
+                 * toString()的具体返回值, 需要配合{@link IStringToEnumConverterFactory,com.luxf.mybatis.plus.base.IEnumSerializer}
                  */
                 if (declaringClass.equals(Enum.class)) {
                     throw new UnsupportedOperationException(
@@ -76,7 +77,7 @@ public class SwaggerObjectMapperConfiguredEvent implements ApplicationListener<O
         for (Field field : fields) {
             Class<?> fieldType = field.getType();
             if (fieldType.isEnum() && DescriptionEnum.class.isAssignableFrom(fieldType)) {
-                DescriptionEnum<?>[] enumValues = CustomEnumConverterFactory.getEnumValues((Class<? extends DescriptionEnum<?>>) fieldType);
+                DescriptionEnum<?>[] enumValues = EnumCache.INSTANCE.getEnumValues((Class<? extends DescriptionEnum<?>>) fieldType);
                 if (enumValues.length == 0) {
                     return;
                 }

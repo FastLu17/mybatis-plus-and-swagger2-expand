@@ -113,7 +113,8 @@ public class UserController {
      *
      * @param sex
      * @return
-     * @see com.luxf.mybatis.plus.config.WebDataConvertConfig#configureMessageConverters(List)
+     * @see com.luxf.mybatis.plus.base.IEnumDeserializer
+     * @see com.luxf.mybatis.plus.base.DescriptionEnum
      */
     @GetMapping("/enum")
     @ApiOperation(value = "测试Enum")
@@ -126,7 +127,9 @@ public class UserController {
     }
 
     /**
-     *  TODO: POST请求时, 数字转换Enum不正常、
+     * TODO: POST请求时, 数字转换Enum不正常、-> 已处理
+     *
+     * @see com.luxf.mybatis.plus.base.IEnumDeserializer
      */
     @PostMapping("/enum/post")
     @ApiOperation(value = "测试Enum")

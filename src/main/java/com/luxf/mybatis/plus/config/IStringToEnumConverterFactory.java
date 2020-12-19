@@ -1,6 +1,7 @@
 package com.luxf.mybatis.plus.config;
 
 import com.luxf.mybatis.plus.base.DescriptionEnum;
+import com.luxf.mybatis.plus.base.EnumCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
@@ -8,9 +9,7 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,7 +25,7 @@ import java.util.stream.Stream;
  * public class WebDataConvertConfig implements WebMvcConfigurer {
  *      @Override
  *      public void addFormatters(FormatterRegistry registry) {
- *          registry.addConverterFactory(new CustomEnumConverterFactory());
+ *          registry.addConverterFactory(new IStringToEnumConverterFactory());
  *      }
  * }
  * @see FormatterRegistry#addConverterFactory(ConverterFactory)
@@ -34,26 +33,11 @@ import java.util.stream.Stream;
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
 @Slf4j
-public class CustomEnumConverterFactory implements ConverterFactory<String, DescriptionEnum<?>> {
+public class IStringToEnumConverterFactory implements ConverterFactory<String, DescriptionEnum<?>> {
 
     /**
      * {@link DescriptionEnum}继承了{@link com.baomidou.mybatisplus.annotation.IEnum}, 可以直接将枚举值转换插入数据库中、
      */
-    private static final Map<Class<? extends DescriptionEnum<?>>, DescriptionEnum<?>[]> ENUM_CACHE = new ConcurrentHashMap<>(64);
-
-
-    static DescriptionEnum<?>[] getEnumValues(Class<? extends DescriptionEnum<?>> enumType) {
-        DescriptionEnum<?>[] enums = ENUM_CACHE.get(enumType);
-        if (Objects.nonNull(enums)) {
-            return enums;
-        }
-        if (enumType.isEnum()) {
-            DescriptionEnum<?>[] enumConstants = enumType.getEnumConstants();
-            ENUM_CACHE.put(enumType, enumConstants);
-            return enumConstants;
-        }
-        return new DescriptionEnum[]{};
-    }
 
     @Override
     public <T extends DescriptionEnum<?>> Converter<String, T> getConverter(Class<T> targetType) {
@@ -76,7 +60,7 @@ public class CustomEnumConverterFactory implements ConverterFactory<String, Desc
             // enumType.isEnum() always true.
             T[] enumConstants = enumType.getEnumConstants();
             if (enumConstants != null) {
-                ENUM_CACHE.put(enumType, enumConstants);
+                EnumCache.INSTANCE.putValues(enumType, enumConstants);
                 for (T constant : enumConstants) {
                     // 需要将DescriptionEnum#getValue()的值转为String、
                     if (source.trim().equals(constant.getValue().toString())) {

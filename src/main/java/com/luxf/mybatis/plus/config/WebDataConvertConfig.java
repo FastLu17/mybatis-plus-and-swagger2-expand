@@ -1,19 +1,14 @@
 package com.luxf.mybatis.plus.config;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.luxf.mybatis.plus.base.DescriptionEnum;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -29,8 +24,9 @@ public class WebDataConvertConfig implements WebMvcConfigurer {
      */
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        registry.addConverterFactory(new CustomEnumConverterFactory());
-        registry.addConverterFactory(new NumberToEnumConverterFactory());
+        // 必须使用、(否则无法将String 转换为 Enum)
+        registry.addConverterFactory(new IStringToEnumConverterFactory());
+        // registry.addConverterFactory(new NumberToEnumConverterFactory());
     }
 
     /**
@@ -44,8 +40,10 @@ public class WebDataConvertConfig implements WebMvcConfigurer {
         simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
         simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
 
-        // 处理自定义枚举, 在ResponseBody中, 使用的是Enum#name()返回的问题、以下两种都符合要求.
-        simpleModule.addSerializer(DescriptionEnum.class, DescriptionEnumJsonSerializer.instance);
+        // 已经自定义枚举的反序列化器和序列化器, 无需此配置(配置后也不生效)
+
+        // 处理自定义枚举, 在ResponseBody中, 使用的是Enum#name()返回的问题、
+        // simpleModule.addSerializer(DescriptionEnum.class, ToStringSerializer.instance);
 
         converters.forEach(converter -> {
             if (converter instanceof MappingJackson2HttpMessageConverter) {
@@ -54,28 +52,5 @@ public class WebDataConvertConfig implements WebMvcConfigurer {
                 objectMapper.registerModule(simpleModule);
             }
         });
-    }
-
-    /**
-     * 由于{@link DescriptionEnum}的实现枚举, toString()方法就是{@link DescriptionEnum#getValue()}, 简单处理 可以直接使用{@link ToStringSerializer#instance}
-     */
-    private static class DescriptionEnumJsonSerializer extends JsonSerializer<DescriptionEnum> {
-        private final static DescriptionEnumJsonSerializer instance = new DescriptionEnumJsonSerializer();
-        private final static ObjectMapper objectMapper = new ObjectMapper();
-
-        @Override
-        public void serialize(DescriptionEnum value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-            // 不是枚举的时候, 需要单独处理、
-            if (!value.getClass().isEnum()) {
-                gen.writeString(objectMapper.writeValueAsString(value));
-                return;
-            }
-            // 如果想要返回DescriptionEnum<?>的具体泛型类型, 则稍加处理、
-            if (value.getValue() instanceof Number) {
-                gen.writeNumber(value.toString());
-            } else {
-                gen.writeString(value.getValue().toString());
-            }
-        }
     }
 }

@@ -1,6 +1,7 @@
 package com.luxf.mybatis.plus.config;
 
 import com.luxf.mybatis.plus.base.DescriptionEnum;
+import com.luxf.mybatis.plus.base.EnumCache;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -54,7 +55,7 @@ public class SwaggerApiImplicitParamProcessor implements InstantiationAwareBeanP
         for (Parameter parameter : parameters) {
             Class<?> methodParamType = parameter.getType();
             if (DescriptionEnum.class.isAssignableFrom(methodParamType) && parameter.getName().equals(name)) {
-                DescriptionEnum<?>[] enumValues = CustomEnumConverterFactory.getEnumValues((Class<? extends DescriptionEnum<?>>) methodParamType);
+                DescriptionEnum<?>[] enumValues = EnumCache.INSTANCE.getEnumValues((Class<? extends DescriptionEnum<?>>) methodParamType);
                 if (enumValues.length == 0) {
                     return;
                 }

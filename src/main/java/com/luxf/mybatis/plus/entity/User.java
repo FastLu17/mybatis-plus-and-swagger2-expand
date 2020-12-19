@@ -45,7 +45,7 @@ public class User extends BaseEntity {
     @TableField("ADDRESS")
     private String address;
 
-    @ApiModelProperty(value = "性别,1:男 2:女")
+    @ApiModelProperty(value = "性别")
     @TableField("SEX")
     private SexEnum sex;
 }
