@@ -11,6 +11,7 @@ import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.Trigger;
@@ -38,7 +39,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @EnableScheduling
-public class ISchedulingConfigurer implements SchedulingConfigurer, InitializingBean {
+public class ISchedulingConfigurer implements SchedulingConfigurer, InitializingBean, DisposableBean {
 
     private final Map<Long, SchedulingTask> taskMap = new HashMap<>(32);
 
@@ -58,6 +59,8 @@ public class ISchedulingConfigurer implements SchedulingConfigurer, Initializing
 
     /**
      * 初始值是ScheduledTaskRegistrar#getScheduledTasks()的结果、
+     *
+     * 销毁时, 所有的Task都需要执行ScheduledTask#cancel().
      */
     private Set<ScheduledTask> scheduledTasks;
 
@@ -68,6 +71,13 @@ public class ISchedulingConfigurer implements SchedulingConfigurer, Initializing
             return;
         }
         initTaskMap(mainClass);
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        for (ScheduledTask task : getTasks()) {
+            task.cancel();
+        }
     }
 
     /**
