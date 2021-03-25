@@ -2,7 +2,7 @@ package com.luxf.mybatis.plus.base;
 
 public class Result<T> {
 
-    private static final int SUCCESS_code = 0;
+    private static final int SUCCESS_CODE = 0;
     private static final String SUCCESS = "success";
     private static final String FAILED = "failed";
 
@@ -11,10 +11,15 @@ public class Result<T> {
     private T data;
 
 
-    private Result(T data) {
-        this.code = SUCCESS_code;
-        this.msg = SUCCESS;
+    private Result(T data, int code, String msg) {
+        this.code = code;
+        this.msg = msg;
         this.data = data;
+    }
+
+    private Result() {
+        this.code = SUCCESS_CODE;
+        this.msg = SUCCESS;
     }
 
     private Result(String msg) {
@@ -23,11 +28,11 @@ public class Result<T> {
     }
 
     public static <T> Result<T> success() {
-        return new Result<>(null);
+        return new Result<>();
     }
 
     public static <T> Result<T> success(T data) {
-        return new Result<>(data);
+        return new Result<>(data, SUCCESS_CODE, SUCCESS);
     }
 
     public static <T> Result<T> failed(String msg) {
@@ -54,6 +59,6 @@ public class Result<T> {
 
 
     public boolean isSuccess() {
-        return this.code == SUCCESS_code;
+        return this.code == SUCCESS_CODE;
     }
 }

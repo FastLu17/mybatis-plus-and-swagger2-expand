@@ -25,7 +25,7 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo())
                 .select()
                 // 扫描包
-                .apis(RequestHandlerSelectors.basePackage("com.luxf.mybatis.plus.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.luxf.mybatis.plus"))
                 // 扫描在API注解的controller
                 .apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
                 // 扫描带ApiOperation注解的方法
