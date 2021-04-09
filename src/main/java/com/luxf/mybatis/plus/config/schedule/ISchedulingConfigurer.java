@@ -164,7 +164,9 @@ public class ISchedulingConfigurer implements SchedulingConfigurer, Initializing
     private Set<ScheduledTask> getTasks() {
         if (scheduledTasks == null) {
             synchronized (taskMap) {
-                scheduledTasks = new LinkedHashSet<>(taskRegistrar.getScheduledTasks());
+                if (scheduledTasks == null) {
+                    scheduledTasks = new LinkedHashSet<>(taskRegistrar.getScheduledTasks());
+                }
             }
         }
         return scheduledTasks;

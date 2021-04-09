@@ -89,6 +89,8 @@ public class SchedulingTaskController {
         if (taskById == null) {
             return Result.failed();
         }
+        // 先取消、再重启Task.
+        configurer.cancelTask(id);
         configurer.resumeTask(taskById);
         return Result.success();
     }
